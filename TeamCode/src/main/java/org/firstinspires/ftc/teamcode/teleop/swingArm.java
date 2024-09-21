@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import android.icu.text.CaseMap;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="Swing Arm")
 public class swingArm extends LinearOpMode {
@@ -12,6 +15,7 @@ public class swingArm extends LinearOpMode {
     public void runOpMode(){
         DcMotor arm = hardwareMap.dcMotor.get("arm");
         DcMotor actuator = hardwareMap.dcMotor.get("actuator");
+        Servo pivot = hardwareMap.servo.get("pivot");
 
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -25,6 +29,7 @@ public class swingArm extends LinearOpMode {
         //TODO: Set this uwu
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        pivot.setDirection(Servo.Direction.FORWARD);
 
         telemetry.addLine("ready to go");
         telemetry.update();
@@ -52,6 +57,18 @@ public class swingArm extends LinearOpMode {
                 moveActuator(0.0, actuator);
             }
 
+            if (gamepad2.dpad_up && !gamepad2.dpad_down && !gamepad1.dpad_left && !gamepad2.dpad_right){
+                clawPivot(1.0, pivot);
+            }
+            if ((gamepad2.dpad_left || gamepad2.dpad_right) && !gamepad2.dpad_up && !gamepad2.dpad_down){
+                clawPivot(0.5, pivot);
+            }
+            if (gamepad2.dpad_down && !gamepad2.dpad_up && !gamepad2.dpad_left && !gamepad2.dpad_right){
+                clawPivot(0.0, pivot);
+            }
+
+
+
 
             telemetry.addLine("yippee! the robot is working!");
             telemetry.update();
@@ -72,5 +89,14 @@ public class swingArm extends LinearOpMode {
         int targetPosition = (int) (pos * UPPER_BOUND);
 
         arm.setTargetPosition(targetPosition);
+    }
+
+    public void clawPivot(double pos, Servo pivot){
+        final double LOWER_BOUND = 0.2;
+        final double UPPER_BOUND = 0.8;
+
+        double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) + LOWER_BOUND;
+
+        pivot.setPosition(targetPosition);
     }
 }
