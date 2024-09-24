@@ -15,7 +15,9 @@ public class swingArm extends LinearOpMode {
     public void runOpMode(){
         DcMotor arm = hardwareMap.dcMotor.get("arm");
         DcMotor actuator = hardwareMap.dcMotor.get("actuator");
-        Servo pivot = hardwareMap.servo.get("pivot");
+        Servo pivotL = hardwareMap.servo.get("pivotL");
+        Servo pivotR = hardwareMap.servo.get("pivotL");
+        Servo claw = hardwareMap.servo.get("pivotL");
 
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -29,7 +31,9 @@ public class swingArm extends LinearOpMode {
         //TODO: Set this uwu
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        pivot.setDirection(Servo.Direction.FORWARD);
+        pivotL.setDirection(Servo.Direction.FORWARD);
+        pivotR.setDirection(Servo.Direction.FORWARD);
+        claw.setDirection(Servo.Direction.FORWARD);
 
         telemetry.addLine("ready to go");
         telemetry.update();
@@ -58,13 +62,23 @@ public class swingArm extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up && !gamepad2.dpad_down && !gamepad1.dpad_left && !gamepad2.dpad_right){
-                clawPivot(1.0, pivot);
+                clawPivot(1.0, pivotL, pivotR);
             }
             if ((gamepad2.dpad_left || gamepad2.dpad_right) && !gamepad2.dpad_up && !gamepad2.dpad_down){
-                clawPivot(0.5, pivot);
+                clawPivot(0.5, pivotL, pivotR);
             }
             if (gamepad2.dpad_down && !gamepad2.dpad_up && !gamepad2.dpad_left && !gamepad2.dpad_right){
-                clawPivot(0.0, pivot);
+                clawPivot(0.0, pivotL, pivotR);
+            }
+
+            if (gamepad2.y && !gamepad2.b && gamepad2.x && !gamepad2.a) {
+                moveClaw(0.1, claw);
+            }
+            if ((gamepad2.x || gamepad2.b) && !gamepad2.a && !gamepad2.y){
+                moveClaw(0.5, claw);
+            }
+            if (gamepad2.a && !gamepad2.b && !gamepad2.x && !gamepad2.y){
+                moveClaw(0.0, claw);
             }
 
 
@@ -91,12 +105,24 @@ public class swingArm extends LinearOpMode {
         arm.setTargetPosition(targetPosition);
     }
 
-    public void clawPivot(double pos, Servo pivot){
+    public void clawPivot(double pos, Servo pivotL, Servo pivotR){
         final double LOWER_BOUND = 0.2;
         final double UPPER_BOUND = 0.8;
 
         double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) + LOWER_BOUND;
 
-        pivot.setPosition(targetPosition);
+        pivotL.setPosition(targetPosition);
+        pivotR.setPosition(targetPosition);
+    }
+
+    public void moveClaw(double pos, Servo Claw){
+        final double LOWER_BOUND = 0.2;
+        final double UPPER_BOUND = 0.8;
+
+        double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) +LOWER_BOUND;
+
+        Claw.setPosition(targetPosition);
+
     }
 }
+
