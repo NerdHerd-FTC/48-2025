@@ -6,8 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-@TeleOp(name="Mecanum Drive")
-public class mecanumDrive extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.MecanumDrive.Params;
+
+@TeleOp(name="Mecanum Drive RO")
+public class mecanumDriveRO extends LinearOpMode {
     public void runOpMode() {
         DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
         DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
@@ -24,13 +27,21 @@ public class mecanumDrive extends LinearOpMode {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        //call for roadrunner params
+        Params params = new Params();
+        double inPerTick = params.inPerTick;
+
+        ThreeDeadWheelLocalizer localizer = new ThreeDeadWheelLocalizer(hardwareMap,inPerTick);
+
         telemetry.addLine("ready to go");
         telemetry.update();
 
         waitForStart();
 
         while (opModeIsActive()) {
+            localizer.update();
             drive(frontLeft,frontRight,backLeft,backRight,1.0, gamepad1);
+
             telemetry.addLine("yippee! the robot is working!");
             telemetry.update();
         }
