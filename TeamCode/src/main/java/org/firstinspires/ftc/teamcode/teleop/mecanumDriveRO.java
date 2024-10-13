@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-@TeleOp(name="Mecanum Drive")
-public class mecanumDrive extends LinearOpMode {
+@TeleOp(name="Mecanum Drive RO")
+public class mecanumDriveRO extends LinearOpMode {
     public void runOpMode() {
         DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
         DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
@@ -31,6 +31,7 @@ public class mecanumDrive extends LinearOpMode {
 
         while (opModeIsActive()) {
             drive(frontLeft,frontRight,backLeft,backRight,1.0, gamepad1);
+
             telemetry.addLine("yippee! the robot is working!");
             telemetry.update();
         }
