@@ -3,16 +3,17 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 @TeleOp(name="Mecanum Drive RO")
 public class mecanumDriveRO extends LinearOpMode {
     public void runOpMode() {
-        DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
-        DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
-        DcMotor backRight = hardwareMap.dcMotor.get("backRight");
+        DcMotorEx frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        DcMotorEx frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+        DcMotorEx backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        DcMotorEx backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
         // Turn off encoders for drivetrain
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
