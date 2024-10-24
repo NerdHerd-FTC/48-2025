@@ -24,15 +24,27 @@ public class mecanumDriveFO extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
+            drive.updatePoseEstimate();
+
+            double heading = drive.pose.heading.toDouble();
+
+            //these values are flipped due to the rotation of roadrunner's coordinate system
+            Vector2d stickPos = new Vector2d(
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x
+            );
+
+            //rotates the stick values by the robot's heading
+            double rotatedX = (stickPos.x*Math.cos(heading))-(stickPos.y*Math.sin(heading));
+            double rotatedY = (stickPos.x*Math.sin(heading))+(stickPos.y*Math.cos(heading));
+
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x
+                            rotatedX,
+                            rotatedY
                     ),
                     -gamepad1.right_stick_x
             ));
-
-            drive.updatePoseEstimate();
 
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
