@@ -18,16 +18,41 @@ public class mecanumDriveFO extends LinearOpMode {
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-        telemetry.addLine("ready to go");
-        telemetry.update();
+        double driverDirection = 0;
+        String driverLocation = "Audience";
+        telemetry.addData("Driver Location", driverLocation);
+        telemetry.addData("Driver Direction", driverDirection);
 
+        while (opModeInInit()) {
+            telemetry.addLine("Press the D-Pad Button towards the audience");
+
+            if (gamepad1.dpad_down){
+                driverDirection = 0;
+                driverLocation = "Audience";
+            } else if (gamepad1.dpad_left) {
+                driverDirection = Math.toRadians(-90);
+                driverLocation = "Red Alliance";
+            } else if (gamepad1.dpad_up) {
+                driverDirection = Math.toRadians(180);
+                driverLocation = "Scoring Table";
+            } else if (gamepad1.dpad_right) {
+                driverDirection = Math.toRadians(90);
+                driverLocation = "Blue Alliance";
+            }
+
+            telemetry.addData("Driver Location", driverLocation);
+            telemetry.addData("Driver Direction", driverDirection);
+            telemetry.addLine("ready to go");
+            telemetry.update();
+        }
         waitForStart();
 
         while (opModeIsActive()){
             drive.updatePoseEstimate();
 
-            double heading = drive.pose.heading.toDouble();
+            double heading = drive.pose.heading.toDouble()+driverDirection;
 
+            //take a look at an explanation of this math at https://www.desmos.com/calculator/yxpg9zuzt4
             //these values are flipped due to the rotation of roadrunner's coordinate system
             Vector2d stickPos = new Vector2d(
                     -gamepad1.left_stick_y,
