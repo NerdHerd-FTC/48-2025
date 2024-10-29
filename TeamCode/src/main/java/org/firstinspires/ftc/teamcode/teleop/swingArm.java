@@ -20,8 +20,7 @@ public class swingArm extends LinearOpMode {
     public void runOpMode(){
         DcMotorEx arm = hardwareMap.get(DcMotorEx.class, "arm");
         DcMotorEx actuator = hardwareMap.get(DcMotorEx.class, "actuator");
-        Servo pivotL = hardwareMap.get(Servo.class, "pivotL");
-        Servo pivotR = hardwareMap.get(Servo.class, "pivotR");
+        Servo pivot = hardwareMap.get(Servo.class, "pivot");
         Servo claw = hardwareMap.get(Servo.class, "claw");
 
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -41,9 +40,7 @@ public class swingArm extends LinearOpMode {
 
         //TODO: Set this uwu
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        pivotL.setDirection(Servo.Direction.FORWARD);
-        pivotR.setDirection(Servo.Direction.FORWARD);
+        pivot.setDirection(Servo.Direction.FORWARD);
         claw.setDirection(Servo.Direction.FORWARD);
 
         telemetry.addLine("ready to go");
@@ -80,16 +77,15 @@ public class swingArm extends LinearOpMode {
 
             telemetry.addData("Pivot", "Gamepad 2 D-Pad");
             if (gamepad2.dpad_up && !gamepad2.dpad_down && !gamepad1.dpad_left && !gamepad2.dpad_right){
-                clawPivot(1.0, pivotL, pivotR);
+                clawPivot(1.0, pivot);
             }
             if ((gamepad2.dpad_left || gamepad2.dpad_right) && !gamepad2.dpad_up && !gamepad2.dpad_down){
-                clawPivot(0.5, pivotL, pivotR);
+                clawPivot(0.5, pivot);
             }
             if (gamepad2.dpad_down && !gamepad2.dpad_up && !gamepad2.dpad_left && !gamepad2.dpad_right){
-                clawPivot(0.0, pivotL, pivotR);
+                clawPivot(0.0, pivot);
             }
-            telemetry.addData("Left Pivot Pos", pivotL.getPosition());
-            telemetry.addData("Right Pivot Pos", pivotR.getPosition());
+            telemetry.addData("Pivot Pos", pivot.getPosition());
 
             telemetry.addData("Claw","Gamepad 2 Face Buttons");
             if (gamepad2.y && !gamepad2.b && gamepad2.x && !gamepad2.a) {
@@ -124,14 +120,13 @@ public class swingArm extends LinearOpMode {
         arm.setTargetPosition(targetPosition);
     }
 
-    public void clawPivot(double pos, Servo pivotL, Servo pivotR){
+    public void clawPivot(double pos, Servo pivot){
         final double LOWER_BOUND = 0.2;
         final double UPPER_BOUND = 0.8;
 
         double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) + LOWER_BOUND;
 
-        pivotL.setPosition(targetPosition);
-        pivotR.setPosition(targetPosition);
+        pivot.setPosition(targetPosition);
     }
 
     public void moveClaw(double pos, Servo claw){
