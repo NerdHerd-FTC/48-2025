@@ -13,8 +13,8 @@ public class swingArm extends LinearOpMode {
     //TODO: set these to be reasonable speeds
     //these values are in ticks per second
     //formatted as (desired rpm/60) * (motor ticks per rotation)
-    public static final double ARM_MAX_VEL = (1.0/60) * 1425.1; //117 rpm: 1425.1 ticks per rotation
-    public static final double ACTUATOR_MAX_VEL = (1.0/60.0) * 1425.1; //117 rpm: 1425.1 ticks per rotation
+    public static final double ARM_MAX_VEL = (20.0/60) * 1425.1; //117 rpm: 1425.1 ticks per rotation
+    public static final double ACTUATOR_MAX_VEL = (100.0/60.0) * 1425.1; //117 rpm: 1425.1 ticks per rotation
 
     @Override
     public void runOpMode(){
@@ -39,7 +39,8 @@ public class swingArm extends LinearOpMode {
         actuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //TODO: Set this uwu
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        actuator.setDirection(DcMotorSimple.Direction.FORWARD);
         pivot.setDirection(Servo.Direction.FORWARD);
         claw.setDirection(Servo.Direction.FORWARD);
 
@@ -88,7 +89,7 @@ public class swingArm extends LinearOpMode {
             telemetry.addData("Pivot Pos", pivot.getPosition());
 
             telemetry.addData("Claw","Gamepad 2 Face Buttons");
-            if (gamepad2.y && !gamepad2.b && gamepad2.x && !gamepad2.a) {
+            if (gamepad2.y && !gamepad2.b && !gamepad2.x && !gamepad2.a) {
                 moveClaw(1.0, claw);
             }
             if ((gamepad2.x || gamepad2.b) && !gamepad2.a && !gamepad2.y){
@@ -105,7 +106,7 @@ public class swingArm extends LinearOpMode {
     }
 
     public void moveArm(double pos, DcMotor arm){
-        final int UPPER_BOUND = 300;
+        final int UPPER_BOUND = 2700;
 
         int targetPosition = (int) (pos * UPPER_BOUND);
 
@@ -113,7 +114,7 @@ public class swingArm extends LinearOpMode {
     }
 
     public void moveActuator(double pos, DcMotor arm){
-        final int UPPER_BOUND = 300;
+        final int UPPER_BOUND = 33500;
 
         int targetPosition = (int) (pos * UPPER_BOUND);
 
@@ -121,8 +122,8 @@ public class swingArm extends LinearOpMode {
     }
 
     public void clawPivot(double pos, Servo pivot){
-        final double LOWER_BOUND = 0.2;
-        final double UPPER_BOUND = 0.8;
+        final double LOWER_BOUND = 0.3;
+        final double UPPER_BOUND = 0.7;
 
         double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) + LOWER_BOUND;
 
@@ -130,8 +131,8 @@ public class swingArm extends LinearOpMode {
     }
 
     public void moveClaw(double pos, Servo claw){
-        final double LOWER_BOUND = 0.2;
-        final double UPPER_BOUND = 0.8;
+        final double LOWER_BOUND = 0.05;
+        final double UPPER_BOUND = 0.55;
 
         double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) +LOWER_BOUND;
 
