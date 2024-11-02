@@ -106,6 +106,9 @@ public class swingArmDrive extends LinearOpMode {
 
             pivotPos = pivotPos + (gamepad1.right_trigger * .10) - (gamepad1.left_trigger * .10);
 
+            //keeps pivotPos between 0 and 1
+            pivotPos = (pivotPos<0) ? 0 : (pivotPos>1) ? 1 : pivotPos;
+
             armControl.clawPivot(pivotPos,pivot);
 
             telemetry.addData("Pivot Position", pivot.getPosition());
