@@ -13,8 +13,8 @@ public class swingArm extends LinearOpMode {
     //TODO: set these to be reasonable speeds
     //these values are in ticks per second
     //formatted as (desired rpm/60) * (motor ticks per rotation)
-    public static final double ARM_MAX_VEL = (20.0/60) * 1425.1; //117 rpm: 1425.1 ticks per rotation
-    public static final double ACTUATOR_MAX_VEL = (100.0/60.0) * 1425.1; //117 rpm: 1425.1 ticks per rotation
+    public static final double ARM_MAX_VEL = (117.0/60) * 1425.1; //117 rpm: 1425.1 ticks per rotation
+    public static final double ACTUATOR_MAX_VEL = (335/60.0) * 384.5; //335 rpm: 384.5 ticks per rotation
 
     @Override
     public void runOpMode(){
@@ -106,7 +106,7 @@ public class swingArm extends LinearOpMode {
     }
 
     public void moveArm(double pos, DcMotor arm){
-        final int UPPER_BOUND = 2700;
+        final int UPPER_BOUND = 2900;
 
         int targetPosition = (int) (pos * UPPER_BOUND);
 
@@ -114,7 +114,7 @@ public class swingArm extends LinearOpMode {
     }
 
     public void moveActuator(double pos, DcMotor arm){
-        final int UPPER_BOUND = 33500;
+        final int UPPER_BOUND = 9038;
 
         int targetPosition = (int) (pos * UPPER_BOUND);
 
