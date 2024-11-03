@@ -74,10 +74,17 @@ public class swingArmDrive extends LinearOpMode {
 
             telemetry.addData("Claw Position", claw.getPosition());
 
-            if (gamepad1.dpad_up ^ gamepad1.dpad_down) {
+            if (gamepad1.dpad_up ^ gamepad1.dpad_down ^ gamepad1.dpad_right ^ gamepad1.dpad_left) {
                 //on ground
                 if (gamepad1.dpad_down) {
                     armControl.moveArm(0.0, arm);
+                }
+                //halfway
+                if (gamepad1.dpad_right){
+                    armControl.moveArm(0.5,arm);
+                }
+                if (gamepad1.dpad_left){
+                    armControl.moveArm(0.85,arm);
                 }
                 //slightly backwards
                 if (gamepad1.dpad_up) {
