@@ -13,7 +13,7 @@ public class unextendArm extends LinearOpMode {
         actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         actuator.setTargetPosition(0);
         actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        actuator.setVelocity((20.0/60.0) * 1425.1);
+        actuator.setVelocity((20/60.0) * 384.5);
         actuator.setDirection(DcMotorSimple.Direction.FORWARD);
         actuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addLine("ready to go");
