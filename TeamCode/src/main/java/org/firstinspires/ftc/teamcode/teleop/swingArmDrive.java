@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.teleop.mecanumDriveRO;
 import org.firstinspires.ftc.teamcode.teleop.swingArm;
 
-@TeleOp(name="Swing Arm Drive")
+@TeleOp(name="RO Mecanum Drive with Arm")
 public class swingArmDrive extends LinearOpMode {
     public void runOpMode() {
         mecanumDriveRO drive = new mecanumDriveRO();

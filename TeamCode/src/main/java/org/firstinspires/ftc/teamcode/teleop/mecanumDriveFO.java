@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@TeleOp(name="Mecanum Drive FO")
+@TeleOp(name="FO Mecanum Drive")
 public class mecanumDriveFO extends LinearOpMode {
 
     @Override
