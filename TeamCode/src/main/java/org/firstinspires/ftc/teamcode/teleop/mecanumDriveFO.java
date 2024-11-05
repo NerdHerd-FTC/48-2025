@@ -18,33 +18,12 @@ public class mecanumDriveFO extends LinearOpMode {
     public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-        double driverDirection = 0;
-        String driverLocation = "Audience";
         double robotOffset = 0;
-        double robotHeading = 0;
         String robotDirection = "Forward";
-        telemetry.addData("Driver Location", driverLocation);
-        telemetry.addData("Driver Direction", driverDirection);
         telemetry.addData("Robot Offset", robotOffset);
-        telemetry.addData("Robot Heading", robotHeading);
         telemetry.addData("Robot Direction", robotDirection);
 
         while (opModeInInit()) {
-            telemetry.addLine("Press the D-Pad Button towards the audience");
-
-            if (gamepad1.dpad_down){
-                driverDirection = 0;
-                driverLocation = "Audience";
-            } else if (gamepad1.dpad_left) {
-                driverDirection = Math.toRadians(-90);
-                driverLocation = "Red Alliance";
-            } else if (gamepad1.dpad_up) {
-                driverDirection = Math.toRadians(180);
-                driverLocation = "Scoring Table";
-            } else if (gamepad1.dpad_right) {
-                driverDirection = Math.toRadians(90);
-                driverLocation = "Blue Alliance";
-            }
 
             telemetry.addLine("Press the face button in the direction of the robot");
 
@@ -62,24 +41,20 @@ public class mecanumDriveFO extends LinearOpMode {
                 robotDirection = "Left";
             }
 
-            robotHeading = driverDirection + robotOffset;
 
-            telemetry.addData("Driver Location", driverLocation);
-            telemetry.addData("Driver Direction", driverDirection);
             telemetry.addData("Robot Offset", robotOffset);
-            telemetry.addData("Robot Heading", robotHeading);
             telemetry.addData("Robot Direction", robotDirection);
             telemetry.addLine("ready to go");
             telemetry.update();
         }
         waitForStart();
 
-        drive.pose = new Pose2d(new Vector2d(0,0),robotHeading);
+        drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
 
         while (opModeIsActive()){
             drive.updatePoseEstimate();
 
-            double heading = drive.pose.heading.toDouble()+driverDirection;
+            double heading = drive.pose.heading.toDouble();
 
             //take a look at an explanation of this math at https://www.desmos.com/calculator/yxpg9zuzt4
             //these values are flipped due to the rotation of roadrunner's coordinate system
@@ -89,8 +64,8 @@ public class mecanumDriveFO extends LinearOpMode {
             );
 
             //rotates the stick values by the robot's heading
-            double rotatedX = (stickPos.x*Math.cos(heading))-(stickPos.y*Math.sin(heading));
-            double rotatedY = (stickPos.x*Math.sin(heading))+(stickPos.y*Math.cos(heading));
+            double rotatedX = (stickPos.x*Math.cos(-heading))-(stickPos.y*Math.sin(-heading));
+            double rotatedY = (stickPos.x*Math.sin(-heading))+(stickPos.y*Math.cos(-heading));
 
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
@@ -99,6 +74,26 @@ public class mecanumDriveFO extends LinearOpMode {
                     ),
                     -gamepad1.right_stick_x
             ));
+
+            if (gamepad1.back){
+                if (gamepad1.y){
+                    robotOffset = 0;
+                    robotDirection = "Forward";
+                    drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
+                } else if (gamepad1.b){
+                    robotOffset = Math.toRadians(-90);
+                    robotDirection = "Right";
+                    drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
+                } else if (gamepad1.a){
+                    robotOffset = Math.toRadians(180);
+                    robotDirection = "Reverse";
+                    drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
+                } else if (gamepad1.x){
+                    robotOffset = Math.toRadians(90);
+                    robotDirection = "Left";
+                    drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
+                }
+            }
 
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
