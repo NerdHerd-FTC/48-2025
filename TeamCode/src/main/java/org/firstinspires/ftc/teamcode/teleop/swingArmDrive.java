@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.teleop.mecanumDrive;
+import org.firstinspires.ftc.teamcode.teleop.mecanumDriveRO;
 import org.firstinspires.ftc.teamcode.teleop.swingArm;
 
 @TeleOp(name="Swing Arm Drive")
 public class swingArmDrive extends LinearOpMode {
     public void runOpMode() {
-        mecanumDrive drive = new mecanumDrive();
+        mecanumDriveRO drive = new mecanumDriveRO();
         swingArm armControl = new swingArm();
 
         DcMotorEx frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
@@ -64,7 +64,7 @@ public class swingArmDrive extends LinearOpMode {
         double pivotPos = 0.5;
 
         while (opModeIsActive()) {
-            drive.drive(frontLeft,frontRight,backLeft,backRight,1.0, gamepad1);
+            drive.drive(frontLeft,frontRight,backLeft,backRight, gamepad1.left_stick_y, gamepad1.left_stick_x,gamepad1.right_stick_x,1.0);
 
             if (gamepad1.left_bumper & !gamepad1.right_bumper){
                 armControl.moveClaw(0.0,claw);
