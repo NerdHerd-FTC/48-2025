@@ -56,7 +56,7 @@ public class mecanumDriveFO extends LinearOpMode {
 
             double heading = drive.pose.heading.toDouble();
 
-            //take a look at an explanation of this math at https://www.desmos.com/calculator/yxpg9zuzt4
+            //take a look at an explanation of this math at https://www.desmos.com/calculator/grw2phgz3j
             //these values are flipped due to the rotation of roadrunner's coordinate system
             Vector2d stickPos = new Vector2d(
                     -gamepad1.left_stick_y,
