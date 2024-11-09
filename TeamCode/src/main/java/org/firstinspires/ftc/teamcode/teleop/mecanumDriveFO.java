@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@TeleOp(name="FO Mecanum Drive")
+@TeleOp(name="FO Mecanum Drive with Arm")
 public class mecanumDriveFO extends LinearOpMode {
 
     @Override
@@ -28,11 +28,8 @@ public class mecanumDriveFO extends LinearOpMode {
         Servo pivot = hardwareMap.get(Servo.class, "pivot");
         Servo claw = hardwareMap.get(Servo.class, "claw");
 
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        arm.setTargetPosition(0);
-        actuator.setTargetPosition(0);
+        arm.setTargetPosition(arm.getCurrentPosition());
+        actuator.setTargetPosition(actuator.getCurrentPosition());
 
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         actuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -72,9 +69,21 @@ public class mecanumDriveFO extends LinearOpMode {
                 robotDirection = "Left";
             }
 
+            telemetry.addLine("Press BACK to reset the arm's position");
+
+            if (gamepad1.back){
+                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                actuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                arm.setTargetPosition(0);
+                actuator.setTargetPosition(0);
+            }
+
 
             telemetry.addData("Robot Offset", robotOffset);
             telemetry.addData("Robot Direction", robotDirection);
+            telemetry.addData("Swing Position", arm.getCurrentPosition());
+            telemetry.addData("Actuator Position", actuator.getCurrentPosition());
             telemetry.addLine("ready to go");
             telemetry.update();
         }
