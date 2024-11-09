@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,8 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-@TeleOp(name="Mecanum Drive")
-public class mecanumDrive extends LinearOpMode {
+@Disabled
+@TeleOp(name="Mecanum Drive RO")
+public class mecanumDriveRO extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         DcMotorEx frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
@@ -31,18 +33,18 @@ public class mecanumDrive extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            drive(frontLeft,frontRight,backLeft,backRight,1.0, gamepad1);
+            drive(frontLeft,frontRight,backLeft,backRight,gamepad1.left_stick_y, gamepad1.left_stick_x,gamepad1.right_stick_x,1.0);
+
             telemetry.addLine("yippee! the robot is working!");
             telemetry.update();
         }
 
     }
 
-    public void drive(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, double strafe_speed, Gamepad gamepad1) {
-        // get values from controller
-        double stickY = -gamepad1.left_stick_y; //Y stick value is REVERSED
-        double stickX = gamepad1.left_stick_x*strafe_speed;
-        double rStickX = gamepad1.right_stick_x;
+    public void drive(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, double stickY, double stickX, double rStickX, double strafe_speed) {
+        stickY = -stickY; //Y stick value is REVERSED
+        stickX = stickX*strafe_speed;
+        //rStickY value is the same
 
         // get denominator
         double denominator = Math.max(Math.abs(stickX) + Math.abs(stickY) + Math.abs(rStickX), 1);
