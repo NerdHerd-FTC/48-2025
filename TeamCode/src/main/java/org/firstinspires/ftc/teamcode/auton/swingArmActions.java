@@ -181,7 +181,7 @@ public class swingArmActions extends LinearOpMode {
         public class PivotUp implements Action{
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
-                armControl.clawPivot(1,pivot);
+                armControl.clawPivot(0.5,pivot);
                 return false;
             }
         }

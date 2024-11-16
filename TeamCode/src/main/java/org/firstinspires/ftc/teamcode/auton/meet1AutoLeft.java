@@ -32,8 +32,7 @@ public class meet1AutoLeft extends swingArmActions {
         TrajectoryActionBuilder moveBack = path1.fresh()
                 .splineToConstantHeading(new Vector2d(0,-44.0),Math.toRadians(90));
         TrajectoryActionBuilder path2 = moveBack.fresh()
-                .splineToConstantHeading(new Vector2d(-47.92,-44.5),Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(-13.12,-5.13,Math.toRadians(180)),0);
+                .splineToConstantHeading(new Vector2d(41,-60),Math.toRadians(90));
 
         Action actionPath1 = path1.build();
         Action actionMoveBack = moveBack.build();
@@ -61,8 +60,10 @@ public class meet1AutoLeft extends swingArmActions {
                         claw.openClaw(),
                         new ParallelAction(
                                 actionPath2,
-                                pivot.pivotDown()
-                        )
+                                actuator.moveActuatorDown(),
+                                pivot.pivotUp()
+                        ),
+                        swing.moveSwingDown()
                 )
         );
     }
