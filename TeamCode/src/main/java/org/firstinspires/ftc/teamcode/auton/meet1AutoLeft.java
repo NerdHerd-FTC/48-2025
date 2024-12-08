@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Arclength;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -12,6 +17,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+
+import java.util.Vector;
 
 @Autonomous(name="Left Side Auto", preselectTeleOp = "FO Mecanum Drive with Arm")
 public class meet1AutoLeft extends swingArmActions {
@@ -27,11 +34,18 @@ public class meet1AutoLeft extends swingArmActions {
         Swing swing = new Swing(hardwareMap);
         Pivot pivot = new Pivot(hardwareMap);
 
+        VelConstraint constraint = new VelConstraint() {
+            @Override
+            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                return 7;
+            }
+        };
+
         TrajectoryActionBuilder path1 = drive.actionBuilder(initPose)
-                .splineToConstantHeading(new Vector2d(0,-39),Math.toRadians(90));
-        TrajectoryActionBuilder moveBack = path1.fresh()
-                .splineToConstantHeading(new Vector2d(0,-44.0),Math.toRadians(90));
-        TrajectoryActionBuilder path2 = moveBack.fresh()
+                .splineToConstantHeading(new Vector2d(0,-39.5),Math.toRadians(90));
+        TrajectoryActionBuilder moveBack = drive.actionBuilder(new Pose2d(0, -39.5, Math.toRadians(-90)))
+                .splineToConstantHeading(new Vector2d(0,-44.5),Math.toRadians(90),constraint);
+        TrajectoryActionBuilder path2 = drive.actionBuilder(new Pose2d(0, -44.5, Math.toRadians(-90)))
                 .splineToConstantHeading(new Vector2d(41,-60),Math.toRadians(90));
 
         Action actionPath1 = path1.build();
@@ -54,7 +68,7 @@ public class meet1AutoLeft extends swingArmActions {
                                 actionPath1,
                                 actuator.moveActuatorScore()
                         ),
-                        pivot.pivotDown(),
+                        pivot.pivotUp(),
                         new SleepAction(.5),
                         actionMoveBack,
                         claw.openClaw(),

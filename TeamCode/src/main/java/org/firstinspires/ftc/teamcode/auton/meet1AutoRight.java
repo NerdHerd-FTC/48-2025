@@ -40,10 +40,10 @@ public class meet1AutoRight extends swingArmActions {
         };
 
         TrajectoryActionBuilder path1 = drive.actionBuilder(initPose)
-                .splineToConstantHeading(new Vector2d(0,-39),Math.toRadians(90));
-        TrajectoryActionBuilder moveBack = drive.actionBuilder(new Pose2d(0,-40.5,Math.toRadians(-90)))
+                .splineToConstantHeading(new Vector2d(0,-39.5),Math.toRadians(90));
+        TrajectoryActionBuilder moveBack = drive.actionBuilder(new Pose2d(0,-39.5,Math.toRadians(-90)))
                 .splineToConstantHeading(new Vector2d(0,-44.5),Math.toRadians(90),constraint);
-        TrajectoryActionBuilder path2 = moveBack.fresh()
+        TrajectoryActionBuilder path2 = drive.actionBuilder(new Pose2d(0, -44.5, Math.toRadians(-90)))
                 .splineToConstantHeading(new Vector2d(60,-60),Math.toRadians(90));
 
         Action actionPath1 = path1.build();
@@ -66,7 +66,7 @@ public class meet1AutoRight extends swingArmActions {
                                 actionPath1,
                                 actuator.moveActuatorScore()
                         ),
-                        pivot.pivotDown(),
+                        pivot.pivotUp(),
                         new SleepAction(1.5),
                         actionMoveBack,
                         claw.openClaw(),
