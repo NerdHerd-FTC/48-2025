@@ -134,7 +134,7 @@ public class swingArm extends LinearOpMode {
 
     public void moveClaw(double pos, Servo claw){
         final double LOWER_BOUND = 0.0;
-        final double UPPER_BOUND = 0.3;
+        final double UPPER_BOUND = 0.4;
 
         double targetPosition = (pos*(UPPER_BOUND-LOWER_BOUND)) +LOWER_BOUND;
 
