@@ -15,12 +15,14 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Vector;
 
 @Autonomous(name="Left Side Auto", preselectTeleOp = "FO Mecanum Drive with Arm")
+@Disabled
 public class meet1AutoLeft extends swingArmActions {
 
     @Override

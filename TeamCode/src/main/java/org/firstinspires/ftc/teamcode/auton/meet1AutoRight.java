@@ -15,10 +15,12 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Autonomous(name="Right Side Auto", preselectTeleOp = "FO Mecanum Drive with Arm")
+@Disabled
 public class meet1AutoRight extends swingArmActions {
 
     @Override

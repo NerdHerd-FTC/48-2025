@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.teleop.mecanumDriveRO;
 import org.firstinspires.ftc.teamcode.teleop.swingArm;
 
-@TeleOp(name="RO Mecanum Drive with Arm")
+@TeleOp(name="OLD RO Mecanum Drive with Arm")
+@Disabled
 public class swingArmDrive extends LinearOpMode {
     public void runOpMode() {
         mecanumDriveRO drive = new mecanumDriveRO();
