@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -24,22 +25,38 @@ public class mecanumDriveFO extends LinearOpMode {
     public void runOpMode() {
         // import drive and slides
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        swingArm armControl = new swingArm();
+        linearSlides linearSlides = new linearSlides();
 
         // init motors and servos
+        DcMotorEx outtakeSlideL = hardwareMap.get(DcMotorEx.class, "outtakeSlideL");
+        DcMotorEx outtakeSlideR = hardwareMap.get(DcMotorEx.class, "outtakeSlideR");
+        Servo outtakePivotL = hardwareMap.get(Servo.class, "outtakePivotL");
+        Servo outtakePivotR = hardwareMap.get(Servo.class, "outtakePivotR");
+        Servo outtakeClaw = hardwareMap.get(Servo.class,"outtakeClaw");
+        Servo intakeSlideL = hardwareMap.get(Servo.class,"intakeSlideL");
+        Servo intakeSlideR = hardwareMap.get(Servo.class,"intakeSlideR");
+        Servo intakeTopPivotL = hardwareMap.get(Servo.class,"intakeTopPivotL");
+        Servo intakeTopPivotR = hardwareMap.get(Servo.class,"intakeTopPivotR");
+        Servo intakeBottomPivotL = hardwareMap.get(Servo.class,"intakeBottomPivotL");
+        Servo intakeBottomPivotR = hardwareMap.get(Servo.class,"intakeBottomPivotR");
+        CRServo intakeCactus = hardwareMap.get(CRServo.class,"intakeCactus");
 
 
         // set target position for RUN_TO_POSITION
+        outtakeSlideL.setTargetPosition(outtakeSlideL.getCurrentPosition());
+        outtakeSlideR.setTargetPosition(outtakeSlideR.getCurrentPosition());
 
-
-        // set motor mode
-
+        // set mode
+        outtakeSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outtakeSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // set velocity for RUN_TO_POSITION
-
+        outtakeSlideL.setVelocity(org.firstinspires.ftc.teamcode.teleop.linearSlides.SLIDE_MAX_VEL);
+        outtakeSlideR.setVelocity(org.firstinspires.ftc.teamcode.teleop.linearSlides.SLIDE_MAX_VEL);
 
         // set ZeroPowerBehavior
-
+        outtakeSlideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        outtakeSlideR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // set directions
         // TODO: set these correctly
@@ -78,7 +95,8 @@ public class mecanumDriveFO extends LinearOpMode {
 
             telemetry.addData("Robot Offset", robotOffset);
             telemetry.addData("Robot Direction", robotDirection);
-            // TODO: add telemetry for outtake slide position
+            telemetry.addData("Left Outtake Slide Position", outtakeSlideL.getCurrentPosition());
+            telemetry.addData("Right Outtake Slide Position", outtakeSlideR.getCurrentPosition());
             telemetry.addLine("ready to go");
             telemetry.update();
         }
@@ -128,8 +146,8 @@ public class mecanumDriveFO extends LinearOpMode {
                 }
             }
 
-            telemetry.addData("x", drive.pose.position.x);
-            telemetry.addData("y", drive.pose.position.y);
+//            telemetry.addData("x", drive.pose.position.x);
+//            telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.update();
 

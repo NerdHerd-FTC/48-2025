@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @TeleOp(name="Linear Slide Controls")
 @Disabled
 public class linearSlides extends LinearOpMode {
+    public static final double SLIDE_MAX_VEL = (312/60.0) * ((((1+(46/17))) * (1+(46/11))) * 28); //312 rpm
+
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addLine("no");
