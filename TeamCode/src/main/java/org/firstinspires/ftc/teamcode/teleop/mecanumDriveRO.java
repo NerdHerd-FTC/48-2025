@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-@Disabled
-@TeleOp(name="Mecanum Drive RO")
+@TeleOp(name="Mecanum Drive RO", group="zzz")
 public class mecanumDriveRO extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
@@ -24,8 +23,8 @@ public class mecanumDriveRO extends LinearOpMode {
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //change these if the motors don't spin the correct directions
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addLine("ready to go");
         telemetry.update();
