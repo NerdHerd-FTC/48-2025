@@ -8,7 +8,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -25,7 +24,7 @@ public class mecanumDriveFO extends LinearOpMode {
     public void runOpMode() {
         // import drive and slides
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        linearSlides linearSlides = new linearSlides();
+        linearSlides arm = new linearSlides();
 
         // init motors and servos
         DcMotorEx outtakeSlideL = hardwareMap.get(DcMotorEx.class, "outtakeSlideL");
@@ -39,7 +38,7 @@ public class mecanumDriveFO extends LinearOpMode {
         Servo intakeTopPivotR = hardwareMap.get(Servo.class,"intakeTopPivotR");
         Servo intakeBottomPivotL = hardwareMap.get(Servo.class,"intakeBottomPivotL");
         Servo intakeBottomPivotR = hardwareMap.get(Servo.class,"intakeBottomPivotR");
-        CRServo intakeCactus = hardwareMap.get(CRServo.class,"intakeCactus");
+        Servo intakeCactus = hardwareMap.get(Servo.class,"intakeCactus");
 
 
         // set target position for RUN_TO_POSITION
@@ -47,12 +46,12 @@ public class mecanumDriveFO extends LinearOpMode {
         outtakeSlideR.setTargetPosition(outtakeSlideR.getCurrentPosition());
 
         // set mode
-        outtakeSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        outtakeSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outtakeSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        outtakeSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // set velocity for RUN_TO_POSITION
-        outtakeSlideL.setVelocity(org.firstinspires.ftc.teamcode.teleop.linearSlides.SLIDE_MAX_VEL);
-        outtakeSlideR.setVelocity(org.firstinspires.ftc.teamcode.teleop.linearSlides.SLIDE_MAX_VEL);
+//        outtakeSlideL.setVelocity(org.firstinspires.ftc.teamcode.teleop.linearSlides.SLIDE_MAX_VEL);
+//        outtakeSlideR.setVelocity(org.firstinspires.ftc.teamcode.teleop.linearSlides.SLIDE_MAX_VEL);
 
         // set ZeroPowerBehavior
         outtakeSlideL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -60,6 +59,11 @@ public class mecanumDriveFO extends LinearOpMode {
 
         // set directions
         // TODO: set these correctly
+        intakeSlideL.setDirection(Servo.Direction.REVERSE);
+        outtakePivotL.setDirection(Servo.Direction.REVERSE);
+        intakeTopPivotR.setDirection(Servo.Direction.REVERSE);
+        intakeBottomPivotL.setDirection(Servo.Direction.REVERSE);
+        outtakeSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
@@ -86,10 +90,14 @@ public class mecanumDriveFO extends LinearOpMode {
                 robotDirection = "Left";
             }
 
-            telemetry.addLine("Press BACK to reset ALL MECHANISM positions");
+            telemetry.addLine("Press BACK to reset outtake extension positions");
 
             if (gamepad1.back){
-                // TODO: add position reset here
+                outtakeSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                outtakeSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                outtakeSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                outtakeSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
 
@@ -101,6 +109,14 @@ public class mecanumDriveFO extends LinearOpMode {
             telemetry.update();
         }
         waitForStart();
+
+        outtakeClaw.setPosition(arm.outtakeClawCalc(0.0));
+        boolean outtakeClawOpen = true;
+        boolean aPrevPos = gamepad1.a;
+
+        intakeCactus.setPosition(arm.outtakeClawCalc(0.0));
+        boolean intakeClawOpen = true;
+        boolean bPrevPos = gamepad1.b;
 
         drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
 
@@ -145,6 +161,72 @@ public class mecanumDriveFO extends LinearOpMode {
                     drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
                 }
             }
+
+            // Outtake Slide Block
+            double slidePower = (-gamepad1.left_trigger) + gamepad1.right_trigger;
+            if ((outtakeSlideL.getCurrentPosition() < arm.outakeExtendCalc(1.0)) && (outtakeSlideR.getCurrentPosition() < arm.outakeExtendCalc(1.0)) && (slidePower > 0.0)){
+                outtakeSlideL.setPower(slidePower);
+                outtakeSlideR.setPower(slidePower);
+            } else if ((outtakeSlideL.getCurrentPosition() > arm.outakeExtendCalc(0.0)) && (outtakeSlideR.getCurrentPosition() > arm.outakeExtendCalc(0.0)) && (slidePower < 0.0)){
+                outtakeSlideL.setPower(slidePower);
+                outtakeSlideR.setPower(slidePower);
+            } else {
+                outtakeSlideL.setPower(0);
+                outtakeSlideR.setPower(0);
+            }
+            telemetry.addData("Outtake Slide L Position", outtakeSlideL.getCurrentPosition());
+            telemetry.addData("Outtake Slide R Position", outtakeSlideR.getCurrentPosition());
+
+            // Outtake Pivot Block
+            outtakePivotL.setPosition(arm.outtakePivotCalc(1.0));
+            outtakePivotR.setPosition(arm.outtakePivotCalc(1.0));
+
+            // Outtake Claw Block
+            if ((!aPrevPos) && (gamepad1.a) && (!gamepad1.back)){
+                if (outtakeClawOpen){
+                    outtakeClaw.setPosition(arm.outtakeClawCalc(1.0));
+                } else {
+                    outtakeClaw.setPosition(arm.outtakeClawCalc(0.0));
+                }
+                outtakeClawOpen = !outtakeClawOpen;
+            }
+
+            // Intake Slide Block
+            if (gamepad1.dpad_up && !gamepad1.dpad_down){
+                intakeSlideL.setPosition(arm.intakeExtendCalc(1.0));
+                intakeSlideR.setPosition(arm.intakeExtendCalc(1.0));
+            }
+            if (!gamepad1.dpad_up && gamepad1.dpad_down){
+                intakeSlideL.setPosition(arm.intakeExtendCalc(0.0));
+                intakeSlideR.setPosition(arm.intakeExtendCalc(0.0));
+            }
+
+            // Intake Pivot Block
+            if (gamepad1.right_bumper){
+                intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(0.0));
+                intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(0.0));
+                intakeBottomPivotL.setPosition(arm.intakeBottomPivotCalc(0.0));
+                intakeBottomPivotR.setPosition(arm.intakeBottomPivotCalc(0.0));
+            }
+            if (gamepad1.left_bumper){
+                intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(1.0));
+                intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(1.0));
+                intakeBottomPivotL.setPosition(arm.intakeBottomPivotCalc(0.5));
+                intakeBottomPivotR.setPosition(arm.intakeBottomPivotCalc(0.5));
+            }
+
+            // Intake Claw Block
+            if ((!bPrevPos) && (gamepad1.b) && (!gamepad1.back)){
+                if (intakeClawOpen){
+                    intakeCactus.setPosition(arm.intakeCactusCalc(1.0));
+                } else {
+                    intakeCactus.setPosition(arm.intakeCactusCalc(0.0));
+                }
+                intakeClawOpen = !intakeClawOpen;
+            }
+
+            aPrevPos = gamepad1.a;
+            bPrevPos = gamepad1.b;
 
 //            telemetry.addData("x", drive.pose.position.x);
 //            telemetry.addData("y", drive.pose.position.y);
