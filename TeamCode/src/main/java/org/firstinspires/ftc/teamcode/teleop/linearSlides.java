@@ -19,7 +19,7 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double intakeExtendCalc(double pos){
-        final double BOTTOM = 0.43;
+        final double BOTTOM = 0.435;
         final double TOP = 0.65;
 
         // Multiply position by the range available,
@@ -29,7 +29,7 @@ public class linearSlides extends LinearOpMode {
 
     public int outakeExtendCalc(double pos){
         final int BOTTOM = 0;
-        final int TOP = 3500;
+        final int TOP = 3800;
 
         return (int) ((pos * (TOP - BOTTOM)) + BOTTOM);
     }
