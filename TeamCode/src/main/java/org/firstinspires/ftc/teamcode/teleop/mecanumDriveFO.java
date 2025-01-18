@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @TeleOp(name="FO Mecanum Drive with Slides")
-@Disabled
 public class mecanumDriveFO extends LinearOpMode {
 
     @Override
@@ -118,6 +117,17 @@ public class mecanumDriveFO extends LinearOpMode {
         boolean intakeClawOpen = true;
         boolean bPrevPos = gamepad1.b;
 
+        outtakePivotL.setPosition(arm.outtakePivotCalc(0.0));
+        outtakePivotR.setPosition(arm.outtakePivotCalc(0.0));
+
+        intakeSlideL.setPosition(arm.intakeExtendCalc(0.0));
+        intakeSlideR.setPosition(arm.intakeExtendCalc(0.0));
+
+        intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(1.0));
+        intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(1.0));
+        intakeBottomPivotL.setPosition(arm.intakeBottomPivotCalc(0.5));
+        intakeBottomPivotR.setPosition(arm.intakeBottomPivotCalc(0.5));
+
         drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
 
         while (opModeIsActive()){
@@ -174,12 +184,21 @@ public class mecanumDriveFO extends LinearOpMode {
                 outtakeSlideL.setPower(0);
                 outtakeSlideR.setPower(0);
             }
+            telemetry.addData("Outtake Slide Input", slidePower);
             telemetry.addData("Outtake Slide L Position", outtakeSlideL.getCurrentPosition());
             telemetry.addData("Outtake Slide R Position", outtakeSlideR.getCurrentPosition());
 
             // Outtake Pivot Block
-            outtakePivotL.setPosition(arm.outtakePivotCalc(1.0));
-            outtakePivotR.setPosition(arm.outtakePivotCalc(1.0));
+            if (!gamepad1.back) {
+                if (gamepad1.x) {
+                    outtakePivotL.setPosition(arm.outtakePivotCalc(1.0));
+                    outtakePivotR.setPosition(arm.outtakePivotCalc(1.0));
+                } else if (gamepad1.y) {
+                    outtakePivotL.setPosition(arm.outtakePivotCalc(0.75));
+                    outtakePivotR.setPosition(arm.outtakePivotCalc(0.75));
+                }
+            }
+
 
             // Outtake Claw Block
             if ((!aPrevPos) && (gamepad1.a) && (!gamepad1.back)){
@@ -190,6 +209,7 @@ public class mecanumDriveFO extends LinearOpMode {
                 }
                 outtakeClawOpen = !outtakeClawOpen;
             }
+            telemetry.addData("Is Outtake Claw Open?", outtakeClawOpen);
 
             // Intake Slide Block
             if (gamepad1.dpad_up && !gamepad1.dpad_down){
@@ -224,6 +244,7 @@ public class mecanumDriveFO extends LinearOpMode {
                 }
                 intakeClawOpen = !intakeClawOpen;
             }
+            telemetry.addData("Is Intake Claw Open?", intakeClawOpen);
 
             aPrevPos = gamepad1.a;
             bPrevPos = gamepad1.b;
