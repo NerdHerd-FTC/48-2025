@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,7 +18,12 @@ import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @TeleOp(name="FO Mecanum Drive with Slides")
+@Config
 public class mecanumDriveFO extends LinearOpMode {
+
+    public boolean intakeState = true;
+    public double[] outtakePositions = {0.0,0.7,0.8,1.0};
+    public int outtakePos = 0;
 
     @Override
     public void runOpMode() {
@@ -35,9 +41,9 @@ public class mecanumDriveFO extends LinearOpMode {
         Servo intakeSlideR = hardwareMap.get(Servo.class,"intakeSlideR");
         Servo intakeTopPivotL = hardwareMap.get(Servo.class,"intakeTopPivotL");
         Servo intakeTopPivotR = hardwareMap.get(Servo.class,"intakeTopPivotR");
-        Servo intakeBottomPivotL = hardwareMap.get(Servo.class,"intakeBottomPivotL");
-        Servo intakeBottomPivotR = hardwareMap.get(Servo.class,"intakeBottomPivotR");
-        Servo intakeCactus = hardwareMap.get(Servo.class,"intakeCactus");
+        CRServo intakeCactusL = hardwareMap.get(CRServo.class,"intakeCactusL");
+        CRServo intakeCactusR = hardwareMap.get(CRServo.class,"intakeCactusR");
+        Servo outtakeSpin = hardwareMap.get(Servo.class,"outtakeSpin");
 
 
         // set target position for RUN_TO_POSITION
@@ -61,8 +67,8 @@ public class mecanumDriveFO extends LinearOpMode {
         intakeSlideL.setDirection(Servo.Direction.REVERSE);
         outtakePivotL.setDirection(Servo.Direction.REVERSE);
         intakeTopPivotR.setDirection(Servo.Direction.REVERSE);
-        intakeBottomPivotL.setDirection(Servo.Direction.REVERSE);
         outtakeSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeCactusR.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
@@ -112,21 +118,20 @@ public class mecanumDriveFO extends LinearOpMode {
         outtakeClaw.setPosition(arm.outtakeClawCalc(0.0));
         boolean outtakeClawOpen = true;
         boolean aPrevPos = gamepad1.a;
-
-        intakeCactus.setPosition(arm.outtakeClawCalc(0.0));
-        boolean intakeClawOpen = true;
         boolean bPrevPos = gamepad1.b;
+        boolean yPrevPos = gamepad1.y;
+        boolean xPrevPos = gamepad1.x;
+        boolean rbPrevPos = gamepad1.right_bumper;
+        boolean lbPrevPos = gamepad1.left_bumper;
 
-        outtakePivotL.setPosition(arm.outtakePivotCalc(0.0));
-        outtakePivotR.setPosition(arm.outtakePivotCalc(0.0));
+        outtakePivotL.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+        outtakePivotR.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
 
         intakeSlideL.setPosition(arm.intakeExtendCalc(0.0));
         intakeSlideR.setPosition(arm.intakeExtendCalc(0.0));
 
         intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(1.0));
         intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(1.0));
-        intakeBottomPivotL.setPosition(arm.intakeBottomPivotCalc(0.5));
-        intakeBottomPivotR.setPosition(arm.intakeBottomPivotCalc(0.5));
 
         drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
 
@@ -190,14 +195,17 @@ public class mecanumDriveFO extends LinearOpMode {
 
             // Outtake Pivot Block
             if (!gamepad1.back) {
-                if (gamepad1.x) {
-                    outtakePivotL.setPosition(arm.outtakePivotCalc(1.0));
-                    outtakePivotR.setPosition(arm.outtakePivotCalc(1.0));
-                } else if (gamepad1.y) {
-                    outtakePivotL.setPosition(arm.outtakePivotCalc(0.75));
-                    outtakePivotR.setPosition(arm.outtakePivotCalc(0.75));
+                if (gamepad1.x && !xPrevPos && (outtakePos < outtakePositions.length)) {
+                    outtakePos++;
+                } else if (gamepad1.y && !yPrevPos && (outtakePos > 0)) {
+                    outtakePos--;
                 }
             }
+
+            outtakePivotL.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+            outtakePivotR.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+
+            telemetry.addData("Outtake Pivot Position", outtakePos);
 
 
             // Outtake Claw Block
@@ -222,36 +230,48 @@ public class mecanumDriveFO extends LinearOpMode {
             }
 
             // Intake Pivot Block
-            if (gamepad1.right_bumper){
-                intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(0.0));
-                intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(0.0));
-                intakeBottomPivotL.setPosition(arm.intakeBottomPivotCalc(0.0));
-                intakeBottomPivotR.setPosition(arm.intakeBottomPivotCalc(0.0));
+            if (gamepad1.right_bumper && !rbPrevPos){
+                intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+                intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
             }
-            if (gamepad1.left_bumper){
+            if (gamepad1.left_bumper && !lbPrevPos){
                 intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(1.0));
                 intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(1.0));
-                intakeBottomPivotL.setPosition(arm.intakeBottomPivotCalc(0.5));
-                intakeBottomPivotR.setPosition(arm.intakeBottomPivotCalc(0.5));
             }
 
-            // Intake Claw Block
+            // Intake Cactus Block
+            // true is intaking
             if ((!bPrevPos) && (gamepad1.b) && (!gamepad1.back)){
-                if (intakeClawOpen){
-                    intakeCactus.setPosition(arm.intakeCactusCalc(1.0));
-                } else {
-                    intakeCactus.setPosition(arm.intakeCactusCalc(0.0));
+                if (intakeCactusL.getPower() == 0.0) {
+                    if (intakeState) {
+                        intakeCactusL.setPower(0.5);
+                        intakeCactusR.setPower(0.5);
+                    } else {
+                        intakeCactusL.setPower(-0.5);
+                        intakeCactusR.setPower(-0.5);
+                    }
+                    intakeState = !intakeState;
+                } else{
+                    intakeCactusL.setPower(0.0);
+                    intakeCactusR.setPower(0.0);
                 }
-                intakeClawOpen = !intakeClawOpen;
             }
-            telemetry.addData("Is Intake Claw Open?", intakeClawOpen);
+            telemetry.addData("Is Intake On", intakeState);
+
+            // Outtake Spinner Block
+            outtakeSpin.setPosition(arm.outtakeSpinCalc(1.0));
 
             aPrevPos = gamepad1.a;
             bPrevPos = gamepad1.b;
+            yPrevPos = gamepad1.y;
+            xPrevPos = gamepad1.x;
+            rbPrevPos = gamepad1.right_bumper;
+            lbPrevPos = gamepad1.left_bumper;
 
-//            telemetry.addData("x", drive.pose.position.x);
-//            telemetry.addData("y", drive.pose.position.y);
+            telemetry.addData("x", drive.pose.position.x);
+            telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+            telemetry.addLine("im wheler and i love duenes");
             telemetry.update();
 
             TelemetryPacket packet = new TelemetryPacket();

@@ -29,13 +29,13 @@ public class linearSlides extends LinearOpMode {
 
     public int outakeExtendCalc(double pos){
         final int BOTTOM = 0;
-        final int TOP = 3800;
+        final int TOP = 6100;
 
         return (int) ((pos * (TOP - BOTTOM)) + BOTTOM);
     }
 
     public double intakeTopPivotCalc(double pos){
-        final double BOTTOM = 0.2;
+        final double BOTTOM = 0.0;
         final double TOP = 1.0;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
@@ -56,15 +56,22 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double outtakePivotCalc(double pos){
-        final double BOTTOM = 0.1;
-        final double TOP = 0.75;
+        final double BOTTOM = 0.0;
+        final double TOP = 0.95;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }
 
     public double outtakeClawCalc(double pos){
-        final double BOTTOM = 0.5;
-        final double TOP = 0.2;
+        final double BOTTOM = 0.6;
+        final double TOP = 0.3;
+
+        return (pos * (TOP - BOTTOM)) + BOTTOM;
+    }
+
+    public double outtakeSpinCalc(double pos){
+        final double BOTTOM = 0.325;
+        final double TOP = 0.675;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }

@@ -54,5 +54,8 @@ public class mecanumDriveRO extends LinearOpMode {
         frontRight.setPower((stickY - stickX - rStickX) / denominator);
         backLeft.setPower((stickY - stickX + rStickX) / denominator);
         backRight.setPower((stickY + stickX - rStickX) / denominator);
+
+        telemetry.addData("front left encoder",frontLeft.getCurrentPosition());
+        telemetry.update();
     }
 }
