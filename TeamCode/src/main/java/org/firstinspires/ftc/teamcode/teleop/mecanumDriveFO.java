@@ -22,7 +22,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class mecanumDriveFO extends LinearOpMode {
 
     public boolean intakeState = true;
-    public double[] outtakePositions = {0.0,0.7,0.8,1.0};
+    //TODO: change the first index to the top basket position
+    public static double[] outtakePositions = {0.0,0.7,0.785,0.913,1.0};
     public int outtakePos = 0;
 
     @Override
@@ -47,8 +48,8 @@ public class mecanumDriveFO extends LinearOpMode {
 
 
         // set target position for RUN_TO_POSITION
-        outtakeSlideL.setTargetPosition(outtakeSlideL.getCurrentPosition());
-        outtakeSlideR.setTargetPosition(outtakeSlideR.getCurrentPosition());
+//        outtakeSlideL.setTargetPosition(outtakeSlideL.getCurrentPosition());
+//        outtakeSlideR.setTargetPosition(outtakeSlideR.getCurrentPosition());
 
         // set mode
         outtakeSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -124,8 +125,8 @@ public class mecanumDriveFO extends LinearOpMode {
         boolean rbPrevPos = gamepad1.right_bumper;
         boolean lbPrevPos = gamepad1.left_bumper;
 
-        outtakePivotL.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
-        outtakePivotR.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+        outtakePivotL.setPosition(arm.outtakePivotCalc(outtakePositions[outtakePos]));
+        outtakePivotR.setPosition(arm.outtakePivotCalc(outtakePositions[outtakePos]));
 
         intakeSlideL.setPosition(arm.intakeExtendCalc(0.0));
         intakeSlideR.setPosition(arm.intakeExtendCalc(0.0));
@@ -202,8 +203,8 @@ public class mecanumDriveFO extends LinearOpMode {
                 }
             }
 
-            outtakePivotL.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
-            outtakePivotR.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+            outtakePivotL.setPosition(arm.outtakePivotCalc(outtakePositions[outtakePos]));
+            outtakePivotR.setPosition(arm.outtakePivotCalc(outtakePositions[outtakePos]));
 
             telemetry.addData("Outtake Pivot Position", outtakePos);
 
@@ -231,8 +232,8 @@ public class mecanumDriveFO extends LinearOpMode {
 
             // Intake Pivot Block
             if (gamepad1.right_bumper && !rbPrevPos){
-                intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
-                intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(outtakePositions[outtakePos]));
+                intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(0));
+                intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(0));
             }
             if (gamepad1.left_bumper && !lbPrevPos){
                 intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(1.0));
