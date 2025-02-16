@@ -2,23 +2,28 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Arclength;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Autonomous(name = "Left Auto")
+@Autonomous(name = "Left Auto", preselectTeleOp = "FO Mecanum Drive with Slides")
+@Config
 public class iltAutoLeft extends linearSlidesActions {
+    private final double startDelay = 0.0;
+    // parking includes moving across the field
+    // delay until alliance partner has parked
+    private final double parkDelay = 90.0;
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -40,11 +45,39 @@ public class iltAutoLeft extends linearSlidesActions {
             }
         };
 
-        Action path1 = drive.actionBuilder(initPose)
-                    .splineToLinearHeading(new Pose2d(-48, -48, Math.toRadians(45)), Math.toRadians(-135.00))
-                    .build();
+        // this pose is used to position in front of the basket
+        // TODO: position this to score
+        Pose2d scorePose = new Pose2d(-50, -50, Math.toRadians(45));
 
-        Actions.runBlocking(new SequentialAction(spin.horizontal(),claw.open(),outtakePivot.intake(),intakePivot.up(),intakeSlide.in()));
+        // this pose is used to position in front of the spike
+        // TODO: position this to intake
+        Pose2d spikePose = new Pose2d(-49.00, -40.00, Math.toRadians(-90.00));
+        Pose2d spikeForwardPose = new Pose2d(spikePose.position.x, spikePose.position.y + 0.50, spikePose.heading.toDouble());
+        double forwardMoveY = spikeForwardPose.position.y;
+
+        Action startToBasket = drive.actionBuilder(initPose)
+                .splineToLinearHeading(scorePose, Math.toRadians(-135.00))
+                .build();
+
+        Action basketToFirstSpike = drive.actionBuilder(scorePose)
+                .splineToLinearHeading(spikePose, Math.toRadians(90.00))
+                .build();
+
+        Action forwardMove = drive.actionBuilder(spikePose)
+                .setTangent(Math.toRadians(-90))
+                .lineToY(forwardMoveY)
+                .build();
+
+        Action firstSpikeToBasket = drive.actionBuilder(spikeForwardPose)
+                .splineToLinearHeading(scorePose, Math.toRadians(-135.00))
+                .build();
+
+        Action park = drive.actionBuilder(scorePose)
+                .splineToLinearHeading(new Pose2d(36,-60,Math.toRadians(90)),Math.toRadians(0))
+                .build();
+
+
+        Actions.runBlocking(new SequentialAction(spin.horizontal(),claw.close(),outtakePivot.intake(),intakePivot.up(),intakeSlide.in()));
 
         while (!isStopRequested() && !opModeIsActive()) {
             telemetry.addLine("yeag");
@@ -55,8 +88,45 @@ public class iltAutoLeft extends linearSlidesActions {
         if(isStopRequested()) return;
         Actions.runBlocking(
                 new SequentialAction(
-                        path1,
-                        claw.close()
+                        new SleepAction(startDelay),
+                        // go to basket
+                        new ParallelAction(
+                                startToBasket,
+                                outtakeSlide.score()
+                        ),
+                        // score
+                        outtakePivot.score(),
+                        new SleepAction(1),
+                        claw.open(),
+                        new SleepAction(1),
+                        outtakePivot.intake(),
+                        new SleepAction(0.5),
+                        // go to spike mark
+                        new ParallelAction(
+                                outtakeSlide.floor(),
+                                basketToFirstSpike
+                        ),
+                        // pick up
+                        outtakePivot.floor(),
+                        new SleepAction(1),
+                        forwardMove,
+                        claw.close(),
+                        new SleepAction(0.5),
+                        outtakePivot.intake(),
+                        new SleepAction(1),
+                        new ParallelAction(
+                                firstSpikeToBasket,
+                                outtakeSlide.score()
+                        ),
+                        outtakePivot.score(),
+                        new SleepAction(1),
+                        claw.open(),
+                        new SleepAction(1),
+                        outtakePivot.intake(),
+                        new SleepAction(0.5),
+                        outtakeSlide.floor(),
+                        new SleepAction(parkDelay),
+                        park
                 )
         );
     }

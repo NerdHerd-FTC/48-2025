@@ -23,7 +23,7 @@ public class mecanumDriveFO extends LinearOpMode {
 
     public boolean intakeState = true;
     //TODO: change the first index to the top basket position
-    public static double[] outtakePositions = {0.0,0.7,0.785,0.913,1.0};
+    public static double[] outtakePositions = {0.0,0.6,0.785,0.913,1.0};
     public int outtakePos = 0;
 
     @Override
@@ -196,7 +196,7 @@ public class mecanumDriveFO extends LinearOpMode {
 
             // Outtake Pivot Block
             if (!gamepad1.back) {
-                if (gamepad1.x && !xPrevPos && (outtakePos < outtakePositions.length)) {
+                if (gamepad1.x && !xPrevPos && (outtakePos < outtakePositions.length-1)) {
                     outtakePos++;
                 } else if (gamepad1.y && !yPrevPos && (outtakePos > 0)) {
                     outtakePos--;

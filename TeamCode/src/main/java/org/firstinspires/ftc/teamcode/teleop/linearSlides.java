@@ -56,8 +56,8 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double outtakePivotCalc(double pos){
-        final double BOTTOM = 0.05;
-        final double TOP = 0.88;
+        final double BOTTOM = 0.03;
+        final double TOP = 0.92;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }
