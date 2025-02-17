@@ -20,7 +20,7 @@ public class linearSlides extends LinearOpMode {
 
     public double intakeExtendCalc(double pos){
         final double BOTTOM = 0.435;
-        final double TOP = 0.56;
+        final double TOP = 0.65;
 
         // Multiply position by the range available,
         // then add the bottom number
@@ -35,8 +35,8 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double intakeTopPivotCalc(double pos){
-        final double BOTTOM = 0.0;
-        final double TOP = 1.0;
+        final double BOTTOM = 0.18;
+        final double TOP = 0.43;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }
