@@ -23,7 +23,7 @@ public class mecanumDriveFO extends LinearOpMode {
 
     public boolean intakeState = true;
     //TODO: change the first index to the top basket position
-    public static double[] outtakePositions = {0.0,0.6,0.785,0.913,1.0};
+    public static double[] outtakePositions = {0.0,0.51,0.515,0.8,0.84,1.0};
     public int outtakePos = 0;
 
     @Override
@@ -134,6 +134,9 @@ public class mecanumDriveFO extends LinearOpMode {
         intakeTopPivotL.setPosition(arm.intakeTopPivotCalc(1.0));
         intakeTopPivotR.setPosition(arm.intakeTopPivotCalc(1.0));
 
+        // Outtake Spinner Block
+        outtakeSpin.setPosition(arm.outtakeSpinCalc(0.0));
+
         drive.pose = new Pose2d(new Vector2d(0,0),robotOffset);
 
         while (opModeIsActive()){
@@ -203,6 +206,14 @@ public class mecanumDriveFO extends LinearOpMode {
                 }
             }
 
+            if (outtakePos == 0){
+                // Outtake Spinner Block
+                outtakeSpin.setPosition(arm.outtakeSpinCalc(0.0));
+            } else {
+                // Outtake Spinner Block
+                outtakeSpin.setPosition(arm.outtakeSpinCalc(1.0));
+            }
+
             outtakePivotL.setPosition(arm.outtakePivotCalc(outtakePositions[outtakePos]));
             outtakePivotR.setPosition(arm.outtakePivotCalc(outtakePositions[outtakePos]));
 
@@ -220,11 +231,11 @@ public class mecanumDriveFO extends LinearOpMode {
             }
             telemetry.addData("Is Outtake Claw Open?", outtakeClawOpen);
 
-            // Intake Slide Block
-            if (gamepad1.dpad_up && !gamepad1.dpad_down){
-                intakeSlideL.setPosition(arm.intakeExtendCalc(1.0));
-                intakeSlideR.setPosition(arm.intakeExtendCalc(1.0));
-            }
+//            // Intake Slide Block
+//            if (gamepad1.dpad_up && !gamepad1.dpad_down){
+//                intakeSlideL.setPosition(arm.intakeExtendCalc(1.0));
+//                intakeSlideR.setPosition(arm.intakeExtendCalc(1.0));
+//            }
             if (!gamepad1.dpad_up && gamepad1.dpad_down){
                 intakeSlideL.setPosition(arm.intakeExtendCalc(0.0));
                 intakeSlideR.setPosition(arm.intakeExtendCalc(0.0));
@@ -259,8 +270,7 @@ public class mecanumDriveFO extends LinearOpMode {
             }
             telemetry.addData("Is Intake On", intakeState);
 
-            // Outtake Spinner Block
-            outtakeSpin.setPosition(arm.outtakeSpinCalc(1.0));
+
 
             aPrevPos = gamepad1.a;
             bPrevPos = gamepad1.b;

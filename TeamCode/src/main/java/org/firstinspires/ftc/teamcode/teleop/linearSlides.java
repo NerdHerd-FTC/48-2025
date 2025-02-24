@@ -19,8 +19,8 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double intakeExtendCalc(double pos){
-        final double BOTTOM = 0.435;
-        final double TOP = 0.65;
+        final double BOTTOM = 0.46;
+        final double TOP = 0.56;
 
         // Multiply position by the range available,
         // then add the bottom number
@@ -35,8 +35,8 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double intakeTopPivotCalc(double pos){
-        final double BOTTOM = 0.18;
-        final double TOP = 0.43;
+        final double BOTTOM = 0.535;
+        final double TOP = 0.3;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }
@@ -56,22 +56,22 @@ public class linearSlides extends LinearOpMode {
     }
 
     public double outtakePivotCalc(double pos){
-        final double BOTTOM = 0.03;
-        final double TOP = 0.92;
+        final double BOTTOM = 0.05;
+        final double TOP = 0.99;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }
 
     public double outtakeClawCalc(double pos){
-        final double BOTTOM = 0.6;
-        final double TOP = 0.3;
+        final double BOTTOM = 1.0;
+        final double TOP = 0.7;
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;
     }
 
     public double outtakeSpinCalc(double pos){
-        final double BOTTOM = 0.52;
-        final double TOP = 0.17;
+        final double BOTTOM = 0.74;
+        final double TOP = 0.26;
 
 
         return (pos * (TOP - BOTTOM)) + BOTTOM;

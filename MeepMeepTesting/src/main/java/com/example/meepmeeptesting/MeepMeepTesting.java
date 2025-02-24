@@ -22,7 +22,7 @@ public class MeepMeepTesting {
 
         Pose2d scorePose = new Pose2d(-50, -50, Math.toRadians(45));
 
-        Pose2d spikePose = new Pose2d(-49.00, -40.00, Math.toRadians(-90.00));
+        Pose2d spikePose = new Pose2d(-49.00, -40.00, Math.toRadians(90.00));
         Pose2d spikeForwardPose = new Pose2d(spikePose.position.x, spikePose.position.y + 0.50, spikePose.heading.toDouble());
         double forwardMoveY = spikeForwardPose.position.y;
 
@@ -39,7 +39,7 @@ public class MeepMeepTesting {
                 .lineToY(forwardMoveY)
                 .build();
 
-        Action firstSpikeToBasket = myBot.getDrive().actionBuilder(spikeForwardPose)
+        Action firstSpikeToBasket = myBot.getDrive().actionBuilder(spikePose)
                 .splineToLinearHeading(scorePose, Math.toRadians(-135.00))
                 .build();
 
@@ -62,7 +62,6 @@ public class MeepMeepTesting {
                 ),
                 // pick up
                 new SleepAction(1),
-                forwardMove,
                 new SleepAction(0.5),
                 new SleepAction(1),
                 new ParallelAction(

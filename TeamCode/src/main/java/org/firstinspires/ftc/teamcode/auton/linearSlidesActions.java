@@ -294,6 +294,28 @@ public class linearSlidesActions extends LinearOpMode {
         public Action floor(){
             return new Floor();
         }
+
+        public class Park implements Action{
+            boolean init = false;
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet){
+                if (!init){
+                    outtakeSlideL.setPower(-0.5);
+                    outtakeSlideR.setPower(-0.5);
+                    init = true;
+                }
+                if (outtakeSlideL.getCurrentPosition() <= armControl.outakeExtendCalc(0.5)){
+                    outtakeSlideL.setPower(0);
+                    outtakeSlideR.setPower(0);
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        public Action park(){
+            return new Park();
+        }
     }
 
     public class OuttakeSpin{

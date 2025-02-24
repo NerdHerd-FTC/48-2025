@@ -23,7 +23,7 @@ public class iltAutoLeft extends linearSlidesActions {
     private final double startDelay = 0.0;
     // parking includes moving across the field
     // delay until alliance partner has parked
-    private final double parkDelay = 90.0;
+    private final double parkDelay = 1.0;
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -48,10 +48,11 @@ public class iltAutoLeft extends linearSlidesActions {
         // this pose is used to position in front of the basket
         // TODO: position this to score
         Pose2d scorePose = new Pose2d(-50, -50, Math.toRadians(45));
+        Pose2d scorePoseTwo = new Pose2d(-45.5, -54.5, Math.toRadians(45));
 
         // this pose is used to position in front of the spike
         // TODO: position this to intake
-        Pose2d spikePose = new Pose2d(-49.00, -40.00, Math.toRadians(-90.00));
+        Pose2d spikePose = new Pose2d(-49.00, -44.00, Math.toRadians(-90.00));
         Pose2d spikeForwardPose = new Pose2d(spikePose.position.x, spikePose.position.y + 0.50, spikePose.heading.toDouble());
         double forwardMoveY = spikeForwardPose.position.y;
 
@@ -68,12 +69,12 @@ public class iltAutoLeft extends linearSlidesActions {
                 .lineToY(forwardMoveY)
                 .build();
 
-        Action firstSpikeToBasket = drive.actionBuilder(spikeForwardPose)
-                .splineToLinearHeading(scorePose, Math.toRadians(-135.00))
+        Action firstSpikeToBasket = drive.actionBuilder(spikePose)
+                .splineToLinearHeading(scorePoseTwo, Math.toRadians(-135.00))
                 .build();
 
-        Action park = drive.actionBuilder(scorePose)
-                .splineToLinearHeading(new Pose2d(36,-60,Math.toRadians(90)),Math.toRadians(0))
+        Action park = drive.actionBuilder(scorePoseTwo)
+                .splineToLinearHeading(new Pose2d(44,-60,Math.toRadians(90)),Math.toRadians(0))
                 .build();
 
 
@@ -124,9 +125,10 @@ public class iltAutoLeft extends linearSlidesActions {
                         new SleepAction(1),
                         outtakePivot.intake(),
                         new SleepAction(0.5),
-                        outtakeSlide.floor(),
-                        new SleepAction(parkDelay),
-                        park
+                        new ParallelAction(
+                            outtakeSlide.floor(),
+                            park
+                        )
                 )
         );
     }
