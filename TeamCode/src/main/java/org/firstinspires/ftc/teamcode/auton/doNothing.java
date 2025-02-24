@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 //TODO: change this to the mecanum drive OpMode
-@Autonomous(name="Do Nothing", preselectTeleOp = "Mecanum Drive")
+@Autonomous(name="Do Nothing", preselectTeleOp = "FO Mecanum Drive with Slides")
 public class doNothing extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
